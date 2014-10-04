@@ -30,6 +30,7 @@ public class LoginController extends BaseController {
 		ModelAndView mv = new ModelAndView("tennis/index");
 		
 		System.out.println("dasfsda");
+		System.out.println("ddddddddddddd");
 		
 		//mv.addObject("newsList", newsList);
 		return null;

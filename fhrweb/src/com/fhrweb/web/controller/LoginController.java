@@ -11,8 +11,9 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.annotation.Resource;
 
 /**
- * TennisIndexController 网球新首�?
- * @author ALWIN.LIANG
+ * loginController
+ * @author xingguo.lu
+ * @date 2014-10-04 
  *
  */
 @Controller

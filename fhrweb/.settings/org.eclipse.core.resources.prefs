@@ -1,0 +1,5 @@
+eclipse.preferences.version=1
+encoding//WebContent/header.jsp=UTF-8
+encoding//WebContent/lead.jsp=UTF-8
+encoding//src/com/fhrweb/dao/BaseDao.java=UTF-8
+encoding//src/com/fhrweb/dao/LoginDao.java=UTF-8

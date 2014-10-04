@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-3.2.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-3.2.xsd
+	http://www.springframework.org/schema/mvc
+	http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
+	
+    <!-- 开启注解 -->
+    <mvc:annotation-driven/>
+    
+    <!-- 自动扫描的包名<context:annotation-config/> -->
+	<context:component-scan base-package="com.fhrweb"/>
+	
+    
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName">
+             <value>com.mysql.jdbc.Driver</value>
+        </property>
+        <property name="url">
+             <value>jdbc:mysql://localhost:3306/hrweb</value>
+        </property>
+        <property name="username">
+             <value>root</value>
+        </property>
+        <property name="password">
+             <value>tiger</value>
+        </property>
+    </bean>
+		
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"/>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.current_session_context_class">org.springframework.orm.hibernate4.SpringSessionContext</prop>
+				<prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+				<prop key="hibernate.jdbc.use_streams_for_binary">true</prop>
+			</props>
+		</property>
+		<!-- 扫描实体类，也就是平时所说的model -->
+		<property name="packagesToScan" value="com.fhrweb.model"/>
+	</bean>
+	
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory"/>
+	</bean>
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<tx:attributes>
+			<!-- 对新增,保存,修改,删除的方法要求事务 -->
+			<tx:method name="add*"/>
+			<tx:method name="save*"/>
+			<tx:method name="update*"/>
+			<tx:method name="del*"/>
+			<tx:method name="do*"/>
+			<!-- 其它方法只读事务 -->
+			<tx:method name="*" read-only="true"/>
+		</tx:attributes>
+	</tx:advice>
+	<!-- 申明事务管理 ,只对业务逻辑层实施事务-->
+	<aop:config>
+		<aop:advisor pointcut="execution(* com.fhrweb.dao..*(..))" advice-ref="txAdvice"/>
+	</aop:config>
+
+	
+
+
+	<!-- ehcache
+	<bean id="cacheManager" class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean">
+		<property name="configLocation" value="classpath:ehcache.xml"/>
+	</bean>
+     -->
+
+	<!--下面是MVC的-->
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="supportedMediaTypes" value="text/plain;charset=utf-8"/>
+					<property name="writeAcceptCharset" value="false"/>
+				</bean>
+			</list>
+		</property>
+		<!-- 编辑器 
+		<property name="webBindingInitializer">
+			<bean class="com.gooooal.sports.web.inteceptor.BindingInitializer"/>
+		</property>-->
+	</bean>
+	<!--
+	<bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping">
+		<property name="interceptors">
+			<bean class="com.gooooal.sports.web.inteceptor.AuthorityInteceptor"/>
+		</property>
+	</bean>-->
+
+	<!-- 视图解释类 -->	
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/pages/"/>
+		<property name="suffix" value=".jsp"/>
+	</bean>
+
+	<!-- 对静态资源文件的访问 -->
+	<mvc:default-servlet-handler/>
+
+</beans>

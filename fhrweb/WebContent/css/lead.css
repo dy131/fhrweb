@@ -1,0 +1,18 @@
+.lead
+{
+	background-color: #8080ff;
+	height: 40px;
+	margin-left: 200px;
+	position: absolute;
+	top: 180px;
+	width: 950px;
+	
+}
+.lead_table {
+	margin-top: 8px;
+}
+.lead_table td{
+    text-align:center;
+	width: 150px;
+	font-size: 18px;
+}
